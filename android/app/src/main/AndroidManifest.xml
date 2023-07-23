@@ -1,6 +1,7 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <application
-        android:label="task_manager_app"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.flutter_task_app_test">
+   <application
+        android:label="flutter_task_app_test"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
