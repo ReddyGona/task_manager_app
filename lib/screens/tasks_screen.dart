@@ -1,65 +1,72 @@
-// ignore_for_file: must_be_immutable
-
 import 'package:flutter/material.dart';
 import 'package:flutter_tasks_app/blocs/bloc_export.dart';
 import 'package:flutter_tasks_app/models/task.dart';
 import 'package:flutter_tasks_app/widgets/add_task_bottom_sheet.dart';
-import 'package:flutter_tasks_app/widgets/tasks_list.dart';
+import 'package:flutter_tasks_app/widgets/side_nav_bar.dart';
+import 'package:flutter_tasks_app/widgets/task_list.dart';
 
-class TasksScreen extends StatelessWidget {
+class TasksScreen extends StatefulWidget {
+  static const String routeName = "tasksScreen";
   const TasksScreen({Key? key}) : super(key: key);
 
-  void _addTaskOnPressed(BuildContext context) {
+  @override
+  State<TasksScreen> createState() => _TasksScreenState();
+}
+
+class _TasksScreenState extends State<TasksScreen> {
+  void _addTask(BuildContext context) {
     showModalBottomSheet(
-      context: context,
-      builder: (context) => AddTaskBottomSheet(),
-    );
+        context: context,
+        builder: (context) {
+          return SingleChildScrollView(
+            child: Container(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+              ),
+              child: AddTaskBottomSheet(),
+            ),
+          );
+        });
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<TasksBloc, TasksState>(
-      listener: (context, state) {},
+    return BlocBuilder<TasksBloc, TasksState>(
       builder: (context, state) {
-        // getting all tasks from the state
-        List<Task> tasksList = state.allTasks;
-
+        List<Task> taskList = state.allTasks;
         return Scaffold(
-          appBar: _buildAppBarUI(),
-          body: _buildBodyUI(tasksList),
-          floatingActionButton: _buildButtonToAddTask(context),
+          drawer: const SideNavBar(),
+          appBar: AppBar(
+            title: const Text('Tasks App'),
+            actions: [
+              IconButton(
+                onPressed: () => _addTask(context),
+                icon: const Icon(Icons.add),
+              )
+            ],
+          ),
+          body: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              state.allTasks.isEmpty
+                  ? const SizedBox()
+                  : Center(
+                      child: Chip(
+                        label: Text(
+                          '${state.allTasks.length} ${state.allTasks.length == 1 ? "Task" : "Tasks"}',
+                        ),
+                      ),
+                    ),
+              TaskList(taskList: taskList),
+            ],
+          ),
+          floatingActionButton: FloatingActionButton(
+            onPressed: () => _addTask(context),
+            tooltip: 'Add Task',
+            child: const Icon(Icons.add),
+          ),
         );
       },
-    );
-  }
-
-  FloatingActionButton _buildButtonToAddTask(BuildContext context) {
-    return FloatingActionButton(
-      onPressed: () => _addTaskOnPressed(context),
-      tooltip: 'Add Task',
-      child: const Icon(Icons.add),
-    );
-  }
-
-  Column _buildBodyUI(List<Task> tasks) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        const Center(child: Chip(label: Text('Tasks:'))),
-        TasksList(tasksList: tasks),
-      ],
-    );
-  }
-
-  AppBar _buildAppBarUI() {
-    return AppBar(
-      title: const Text('Tasks App'),
-      actions: [
-        IconButton(
-          onPressed: () {},
-          icon: const Icon(Icons.add),
-        )
-      ],
     );
   }
 }
