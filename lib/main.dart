@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tasks_app/bloc_observer.dart';
 import 'package:flutter_tasks_app/blocs/bloc_export.dart';
 import 'package:flutter_tasks_app/utils/app_router.dart';
+import 'package:flutter_tasks_app/utils/app_theme.dart';
 import 'package:path_provider/path_provider.dart';
 import 'screens/tasks_screen.dart';
 
@@ -36,14 +37,19 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => TasksBloc()),
+        BlocProvider(create: (_) => ThemeSwitchBloc()),
       ],
-      child: MaterialApp(
-        title: 'Flutter Tasks App',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
-        home: const TasksScreen(),
-        onGenerateRoute: appRouter.onGeneratedRoute,
+      child: BlocBuilder<ThemeSwitchBloc, ThemeSwitchState>(
+        builder: (context, state) {
+          return MaterialApp(
+            title: 'Flutter Tasks App',
+            theme: state.switchValue
+                ? AppThemes.appThemeData[AppTheme.darkTheme]
+                : AppThemes.appThemeData[AppTheme.lightTheme],
+            home: const TasksScreen(),
+            onGenerateRoute: appRouter.onGeneratedRoute,
+          );
+        },
       ),
     );
   }

@@ -44,6 +44,7 @@ class _TaskTileState extends State<TaskTile> {
       ),
       trailing: Checkbox(
         value: widget.task.isDone,
+        activeColor: widget.task.isDeleted! ? Colors.grey : Colors.blue,
         onChanged: (_) =>
             widget.task.isDeleted! ? null : _updateTask(context, widget.task),
       ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tasks_app/blocs/bloc_export.dart';
 import 'package:flutter_tasks_app/screens/recycle_bin.dart';
 import 'package:flutter_tasks_app/screens/tasks_screen.dart';
+import 'package:flutter_tasks_app/widgets/theme_switch_widget.dart';
 
 class SideNavBar extends StatelessWidget {
   const SideNavBar({super.key});
@@ -28,8 +29,8 @@ class SideNavBar extends StatelessWidget {
             BlocBuilder<TasksBloc, TasksState>(
               builder: (context, state) {
                 return ListTile(
-                  onTap: () =>
-                      Navigator.of(context).pushNamed(TasksScreen.routeName),
+                  onTap: () => Navigator.of(context)
+                      .pushReplacementNamed(TasksScreen.routeName),
                   leading: const Icon(Icons.folder_special),
                   title: const Text("My Tasks"),
                   trailing: Text(
@@ -45,7 +46,7 @@ class SideNavBar extends StatelessWidget {
               builder: (context, state) {
                 return ListTile(
                   onTap: () => Navigator.of(context)
-                      .pushNamed(RecycleBinScreen.routeName),
+                      .pushReplacementNamed(RecycleBinScreen.routeName),
                   leading: const Icon(Icons.delete),
                   title: const Text("Bin"),
                   trailing: Text(
@@ -56,6 +57,9 @@ class SideNavBar extends StatelessWidget {
                 );
               },
             ),
+            const Divider(),
+            // switch to change the theme of the app
+            const ThemeSwitchWidget(),
           ],
         ),
       ),
