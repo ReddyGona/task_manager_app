@@ -7,11 +7,14 @@ class AddTaskBottomSheet extends StatelessWidget {
   AddTaskBottomSheet({super.key});
 
   final TextEditingController _titleEditingController = TextEditingController();
+  final TextEditingController _descriptionEditingController =
+      TextEditingController();
 
   void _addTaskOnPressed(BuildContext context) {
     Task task = Task(
       id: GUIDGen.generate(), // generating a uniqu id for each task
       title: _titleEditingController.text,
+      description: _descriptionEditingController.text,
     );
 
     // using the read<TaskBloc>() method from the context instance and then
@@ -26,6 +29,7 @@ class AddTaskBottomSheet extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20.0),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
             "Add Task",
@@ -40,21 +44,43 @@ class AddTaskBottomSheet extends StatelessWidget {
               border: OutlineInputBorder(),
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Cancel'),
-              ),
-              ElevatedButton(
-                onPressed: () => _addTaskOnPressed(context),
-                child: const Text("Add"),
-              ),
-            ],
+          const SizedBox(height: 10.0),
+          const Text(
+            "Description",
+            style: TextStyle(fontSize: 24.0),
           ),
+          const SizedBox(height: 10.0),
+          TextField(
+            controller: _descriptionEditingController,
+            autofocus: true,
+            minLines: 3,
+            maxLines: 5,
+            decoration: const InputDecoration(
+              label: Text('Description'),
+              border: OutlineInputBorder(),
+            ),
+          ),
+          const SizedBox(height: 10.0),
+          _addTaskAndCancelButtonUI(context),
+          const SizedBox(height: 10.0),
         ],
       ),
+    );
+  }
+
+  Row _addTaskAndCancelButtonUI(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        TextButton(
+          onPressed: () => Navigator.pop(context),
+          child: const Text('Cancel'),
+        ),
+        ElevatedButton(
+          onPressed: () => _addTaskOnPressed(context),
+          child: const Text("Add"),
+        ),
+      ],
     );
   }
 }

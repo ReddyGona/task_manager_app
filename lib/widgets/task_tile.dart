@@ -36,6 +36,7 @@ class _TaskTileState extends State<TaskTile> {
     return ListTile(
       title: Text(
         widget.task.title,
+        overflow: TextOverflow.ellipsis,
         style: TextStyle(
           decoration: widget.task.isDone!
               ? TextDecoration.lineThrough

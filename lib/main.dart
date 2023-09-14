@@ -3,8 +3,8 @@ import 'package:flutter_tasks_app/bloc_observer.dart';
 import 'package:flutter_tasks_app/blocs/bloc_export.dart';
 import 'package:flutter_tasks_app/utils/app_router.dart';
 import 'package:flutter_tasks_app/utils/app_theme.dart';
+import 'package:flutter_tasks_app/widgets/bottom_nav_bar.dart';
 import 'package:path_provider/path_provider.dart';
-import 'screens/tasks_screen.dart';
 
 void main() async {
   // initializing the widget bindings to do the native calls with hydrated bloc
@@ -46,7 +46,7 @@ class MyApp extends StatelessWidget {
             theme: state.switchValue
                 ? AppThemes.appThemeData[AppTheme.darkTheme]
                 : AppThemes.appThemeData[AppTheme.lightTheme],
-            home: const TasksScreen(),
+            home: const BottomNavBar(),
             onGenerateRoute: appRouter.onGeneratedRoute,
           );
         },

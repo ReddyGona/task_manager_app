@@ -20,7 +20,9 @@ class TasksBloc extends HydratedBloc<TasksEvent, TasksState> {
     final state = this.state;
     // emmitting the task state after adding the task to current list
     emit(TasksState(
-      allTasks: List.from(state.allTasks)..add(event.task),
+      pendingTasks: List.from(state.pendingTasks)..add(event.task),
+      completedTasks: state.completedTasks,
+      favouriteTasks: state.favouriteTasks,
       // getting the removedTasks from the state
       removedTasks: state.removedTasks,
     ));
@@ -32,7 +34,9 @@ class TasksBloc extends HydratedBloc<TasksEvent, TasksState> {
 
     emit(
       TasksState(
-        allTasks: state.allTasks,
+        pendingTasks: state.pendingTasks,
+        completedTasks: state.completedTasks,
+        favouriteTasks: state.favouriteTasks,
         // deleting the tasks only from the removedTasks list
         removedTasks: List.from(state.removedTasks)..remove(task),
       ),
@@ -43,19 +47,28 @@ class TasksBloc extends HydratedBloc<TasksEvent, TasksState> {
     final state = this.state;
     final task = event.task; // updated task value provided by the user
 
-    // getting the insdex of the task provided by the user
-    final index = state.allTasks.indexOf(task);
-
-    // first remove the task and then update the along with adding the task
-    List<Task> allTasks = List.from(state.allTasks)..remove(task);
+    List<Task> pendingTasks = state.pendingTasks;
+    List<Task> completedTasks = state.completedTasks;
 
     // updating the value of isDone
-    task.isDone == false
-        ? allTasks.insert(index, task.copyWith(isDone: true))
-        : allTasks.insert(index, task.copyWith(isDone: false));
+    if (task.isDone == false) {
+      // removing the task from the pending list and then adding the
+      // data to the completedTask list with value of isDone true
+      pendingTasks = List.from(pendingTasks)..remove(task);
+      completedTasks = List.from(completedTasks)
+        ..insert(0, task.copyWith(isDone: true));
+    } else {
+      // removing the task from the completed list and adding the task to the
+      // pending list with the value of isDone as false
+      completedTasks = List.from(completedTasks)..remove(task);
+      pendingTasks = List.from(pendingTasks)
+        ..insert(0, task.copyWith(isDone: false));
+    }
 
     emit(TasksState(
-      allTasks: allTasks,
+      pendingTasks: pendingTasks,
+      completedTasks: completedTasks,
+      favouriteTasks: state.favouriteTasks,
       // getting the removedTasks from the state
       removedTasks: state.removedTasks,
     ));
@@ -66,7 +79,9 @@ class TasksBloc extends HydratedBloc<TasksEvent, TasksState> {
     final state = this.state;
     emit(
       TasksState(
-        allTasks: List.from(state.allTasks)..remove(event.task),
+        pendingTasks: List.from(state.pendingTasks)..remove(event.task),
+        completedTasks: List.from(state.completedTasks)..remove(event.task),
+        favouriteTasks: List.from(state.favouriteTasks)..remove(event.task),
         // adding removed task to the removed task list
         removedTasks: List.from(state.removedTasks)
           ..add(event.task.copyWith(isDeleted: true)),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tasks_app/blocs/bloc_export.dart';
 import 'package:flutter_tasks_app/screens/recycle_bin.dart';
-import 'package:flutter_tasks_app/screens/tasks_screen.dart';
+import 'package:flutter_tasks_app/widgets/bottom_nav_bar.dart';
 import 'package:flutter_tasks_app/widgets/theme_switch_widget.dart';
 
 class SideNavBar extends StatelessWidget {
@@ -30,13 +30,11 @@ class SideNavBar extends StatelessWidget {
               builder: (context, state) {
                 return ListTile(
                   onTap: () => Navigator.of(context)
-                      .pushReplacementNamed(TasksScreen.routeName),
+                      .pushReplacementNamed(BottomNavBar.routeName),
                   leading: const Icon(Icons.folder_special),
                   title: const Text("My Tasks"),
                   trailing: Text(
-                    state.allTasks.isEmpty
-                        ? ""
-                        : state.allTasks.length.toString(),
+                    "${state.pendingTasks.length} | ${state.completedTasks.length}",
                   ),
                 );
               },
