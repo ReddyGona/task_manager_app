@@ -8,6 +8,10 @@ class RecycleBinScreen extends StatelessWidget {
   static const String routeName = "recycleBinScreen";
   const RecycleBinScreen({super.key});
 
+  void _deleteAllTasks(BuildContext context) {
+    context.read<TasksBloc>().add(DeleteAllTasks());
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<TasksBloc, TasksState>(
@@ -18,10 +22,21 @@ class RecycleBinScreen extends StatelessWidget {
           appBar: AppBar(
             title: const Text('Recycle Bin'),
             actions: [
-              IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.add),
-              )
+              state.removedTasks.isNotEmpty
+                  ? PopupMenuButton(
+                      icon: const Icon(Icons.more_vert),
+                      itemBuilder: (context) => [
+                        PopupMenuItem(
+                          child: TextButton.icon(
+                            onPressed: null,
+                            icon: const Icon(Icons.delete_forever),
+                            label: const Text('Delete All Tasks'),
+                          ),
+                          onTap: () => _deleteAllTasks(context),
+                        ),
+                      ],
+                    )
+                  : const SizedBox(),
             ],
           ),
           body: Column(

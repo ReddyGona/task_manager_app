@@ -1,29 +1,46 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tasks_app/blocs/bloc_export.dart';
 import 'package:flutter_tasks_app/models/task.dart';
-import 'package:flutter_tasks_app/utils/guid_generator.dart';
 
-class AddTaskBottomSheet extends StatelessWidget {
-  AddTaskBottomSheet({super.key});
+class EditTaskBottomSheet extends StatefulWidget {
+  final Task currentTask;
 
-  final TextEditingController _titleEditingController = TextEditingController();
-  final TextEditingController _descriptionEditingController =
-      TextEditingController();
+  const EditTaskBottomSheet({
+    super.key,
+    required this.currentTask,
+  });
 
-  void _addTaskOnPressed(BuildContext context) {
-    Task task = Task(
-      id: GUIDGen.generate(), // generating a uniqu id for each task
+  @override
+  State<EditTaskBottomSheet> createState() => _EditTaskBottomSheetState();
+}
+
+class _EditTaskBottomSheetState extends State<EditTaskBottomSheet> {
+  TextEditingController _titleEditingController = TextEditingController();
+  TextEditingController _descriptionEditingController = TextEditingController();
+
+  void _editTaskOnPressed(BuildContext context) {
+    Task updatedTask = Task(
+      id: widget.currentTask.id,
       title: _titleEditingController.text,
       description: _descriptionEditingController.text,
       createdAt: DateTime.now().toString(),
-      isFavourite: false,
+      isFavourite: widget.currentTask.isFavourite,
+      isDone: false,
     );
-
-    // using the read<TaskBloc>() method from the context instance and then
-    // calling the add() method and then passing the AddTask() state having the
-    // task as input to add a new task
-    context.read<TasksBloc>().add(AddTask(task: task));
+    context.read<TasksBloc>().add(EditTask(
+          currentTask: widget.currentTask,
+          updatedTask: updatedTask,
+        ));
     Navigator.pop(context);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _titleEditingController =
+        TextEditingController(text: widget.currentTask.title);
+    _descriptionEditingController =
+        TextEditingController(text: widget.currentTask.description);
   }
 
   @override
@@ -79,8 +96,8 @@ class AddTaskBottomSheet extends StatelessWidget {
           child: const Text('Cancel'),
         ),
         ElevatedButton(
-          onPressed: () => _addTaskOnPressed(context),
-          child: const Text("Add"),
+          onPressed: () => _editTaskOnPressed(context),
+          child: const Text("Save"),
         ),
       ],
     );

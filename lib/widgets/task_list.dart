@@ -52,15 +52,3 @@ class TaskList extends StatelessWidget {
     );
   }
 }
-
-
-// Expanded(
-//       child: ListView.builder(
-//         shrinkWrap: true,
-//         itemCount: taskList.length,
-//         itemBuilder: (context, index) {
-//           var task = taskList[index];
-//           return TaskTile(task: task);
-//         },
-//       ),
-//     );
